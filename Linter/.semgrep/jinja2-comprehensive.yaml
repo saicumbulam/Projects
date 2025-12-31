@@ -1,0 +1,117 @@
+rules:
+  # ============================================================================
+  # UNDEFINED/NULL ACCESS (from our previous rules)
+  # ============================================================================
+
+  - id: jinja2-unsafe-optional-access
+    patterns:
+      - pattern: "{{ $VAR.$ATTR }}"
+      - pattern-not-inside: |
+          {% if $VAR %}
+          ...
+          {% endif %}
+      - pattern-not-inside: |
+          {% if $VAR.$ATTR %}
+          ...
+          {% endif %}
+    message: "Potentially unsafe access to '$VAR.$ATTR' without checking if '$VAR' is defined/not None first"
+    languages: [generic]
+    severity: WARNING
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-unsafe-chained-access
+    patterns:
+      - pattern-regex: '\{\{\s*\w+\.\w+\.\w+(\.\w+)*\s*(?:\||}})'
+      - pattern-not-inside: |
+          {% if ... %}
+          ...
+          {% endif %}
+    message: "Unsafe chained attribute access (2+ levels) without null check - potential AttributeError"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-unsafe-list-indexing
+    patterns:
+      - pattern-regex: '\{\{\s*\w+(\.\w+)*\[\d+\]\s*(?:\||}})'
+      - pattern-not-inside: |
+          {% if ... %}
+          ...
+          {% endif %}
+    message: "Unsafe list/array indexing without length check - potential IndexError. Use {% if var|length > index %} or |first filter"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-unsafe-dict-key-access
+    patterns:
+      - pattern-regex: '\{\{\s*\w+(\.\w+)*\[["\'']\w+["\'']?\]\s*(?:\||}})'
+      - pattern-not-inside: |
+          {% if ... %}
+          ...
+          {% endif %}
+    message: "Unsafe dictionary key access without key existence check - potential KeyError. Consider using .get() method or check if key exists"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-unsafe-index-then-attribute
+    patterns:
+      - pattern-regex: '\{\{\s*\w+(\.\w+)*\[\d+\]\.\w+(\.\w+)*\s*(?:\||}})'
+      - pattern-not-inside: |
+          {% if ... %}
+          ...
+          {% endif %}
+    message: "Unsafe list indexing followed by attribute access - potential IndexError then AttributeError. Check both list length and result is not None"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  # ============================================================================
+  # TEMPLATE SYNTAX ERRORS
+  # ============================================================================
+
+  - id: jinja2-unclosed-block
+    patterns:
+      - pattern-regex: '\{%\s*(if|for|block|macro|filter|call)\s+[^%]*%\}'
+      - pattern-not-regex: '\{%\s*end(if|for|block|macro|filter|call)\s*%\}'
+    message: "Potential unclosed block - ensure {% if %}/{% for %}/{% block %} have matching {% end... %}"
+    languages: [generic]
+    severity: WARNING
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-undefined-variable-usage
+    patterns:
+      - pattern-regex: '\{\{\s*undefined\s*\}\}'
+    message: "Explicit use of 'undefined' - this will cause runtime errors"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"

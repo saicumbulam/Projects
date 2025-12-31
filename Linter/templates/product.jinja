@@ -1,0 +1,10 @@
+Product: {{ product.name }}
+ID: {{ product.product_id }}
+Category: {{ product.category }}
+Price: {{ product.formatted_price }}
+Rating: {{ product.rating }}/5.0
+Stock: {{ product.stock }} units
+Status: {% if product.is_available %}In Stock{% else %}Out of Stock{% endif %}
+
+Description:
+{{ product.description }}

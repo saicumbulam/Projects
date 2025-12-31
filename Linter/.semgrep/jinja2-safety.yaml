@@ -1,0 +1,56 @@
+rules:
+  - id: jinja2-unsafe-optional-access
+    patterns:
+      - pattern: "{{ $VAR.$ATTR }}"
+      - pattern-not-inside: |
+          {% if $VAR %}
+          ...
+          {% endif %}
+      - pattern-not-inside: |
+          {% if $VAR.$ATTR %}
+          ...
+          {% endif %}
+    message: "Potentially unsafe access to '$VAR.$ATTR' without checking if '$VAR' is defined/not None first"
+    languages: [generic]
+    severity: WARNING
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-unsafe-chained-access
+    patterns:
+      - pattern: "{{ $VAR.$ATTR1.$ATTR2 }}"
+      - pattern-not-inside: |
+          {% if $VAR.$ATTR1 %}
+          ...
+          {% endif %}
+    message: "Unsafe chained access to '$VAR.$ATTR1.$ATTR2' without checking if '$VAR.$ATTR1' exists first"
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"
+
+  - id: jinja2-optional-field-without-check
+    patterns:
+      - pattern-regex: '\{\{\s*(\w+)\.(\w+)\s*\}\}'
+      - pattern-not-inside: |
+          {% if ... %}
+          ...
+          {% endif %}
+      - pattern-not-inside: |
+          {% for ... %}
+          ...
+          {% endfor %}
+    message: "Attribute access without null/undefined check - consider wrapping in {% if %} block"
+    languages: [generic]
+    severity: INFO
+    paths:
+      include:
+        - "*.jinja"
+        - "*.jinja2"
+        - "*.j2"

@@ -1,0 +1,13 @@
+Post #{{ post.post_id }}: {{ post.title }}
+Author: {{ post.author.username }}
+Created: {{ post.created_at }}
+Published: {{ post.published.lint }}
+
+Content:
+{{ post.content }}
+
+{% if post.tags %}
+Tags: {{ post.tags|join(', ') }}
+{% else %}
+No tags.
+{% endif %}

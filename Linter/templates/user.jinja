@@ -1,0 +1,14 @@
+User ID: {{ user.user_id }}
+Username: {{ user.username }}
+Email: {{ user.email }}
+Created: {{ user.created_at }}
+Post Count: {{ user.get_post_count() }}
+
+{% if user.posts %}
+Posts:
+{% for post in user.posts %}
+  - {{ post.title }}
+{% endfor %}
+{% else %}
+No posts yet.
+{% endif %}

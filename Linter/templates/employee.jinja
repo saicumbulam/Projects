@@ -1,0 +1,11 @@
+Employee: {{ employee.name }}
+ID: {{ employee.employee_id }}
+Department: {{ employee.department }}
+Salary: ${{ "%.2f"|format(employee.salary) }}
+Hire Date: {{ employee.hire_date }}
+Years of Service: {{ employee.get_years_of_service() }}
+{% if employee.company %}
+Company: {{ employee.company.name }}
+{% else %}
+Company: Not assigned
+{% endif %}

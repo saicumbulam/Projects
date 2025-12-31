@@ -1,0 +1,16 @@
+Company: {{ company.name }}
+Industry: {{ company.industry }}
+Founded: {{ company.founded_year }}
+Employees: {{ company.employees|length }}
+Total Salary Expense: ${{ "%.2f"|format(company.get_total_salary_expense()) }}
+First Employee: {{ company.employees[1] }}
+
+{% if company.employees %}
+Employee List:
+{% for employee in company.employees %}
+  - {{ employee.name }} ({{ employee.department }})
+  - {{ employee.name }} ({{ employee.location }})
+{% endfor %}
+{% else %}
+No employees.
+{% endif %}
