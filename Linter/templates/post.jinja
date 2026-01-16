@@ -11,3 +11,6 @@ Tags: {{ post.tags|join(', ') }}
 {% else %}
 No tags.
 {% endif %}
+{% if post %}
+{{ post.content.name }}
+{% endif %}
